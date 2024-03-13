@@ -210,41 +210,44 @@ public class Board {
       int[] solution = {};
       int row = 0,column = 0;
       int countNum = 0;
+      String pastPosition = "empty";
       String combinedPosition = "";
       if (!isSolvable(oneDimensionalNumber)){
          System.out.println("It can't be solved");
       }
       else{ //çözüme gidiyoruz
+         while (trueSolution == twoDimensionalNumberArray){
+            for(int i = 0; i < 3;i ++){
+               for (int j = 0; j < 3; j ++){
+                  if(numberArray[i][j] == 0){
+                     row = i;
+                     column = j; //get the blank position;
+                     combinedPosition = row + "" + column;
+                  }}}
 
-         for(int i = 0; i < 3;i ++){
-            for (int j = 0; j < 3; j ++){
-               if(numberArray[i][j] == 0){
-                  row = i;
-                  column = j; //get the blank position;
-                  combinedPosition = row + "" + column;
-               }}}
+            System.out.println("our position"+combinedPosition); //getting empty position
 
-         System.out.println("our position"+combinedPosition); //boşun konumu var,
+            String trueWay = trueStep(combinedPosition,row,column,twoDimensionalNumberArray,pastPosition); //getting true way
 
-         String trueWay = trueStep(combinedPosition,row,column,twoDimensionalNumberArray);
+            System.out.println("true way is" + trueWay);
 
-         System.out.println("true way is" + trueWay);
-
-         if (trueWay == "right"){
-            rightWork(row,column,twoDimensionalNumberArray);
+            if (trueWay == "right"){
+               rightWork(row,column,twoDimensionalNumberArray);
+            }
+            else if(trueWay == "left"){
+               leftWork(row,column,twoDimensionalNumberArray);
+            }
+            else if(trueWay == "top"){
+               topWork(row,column,twoDimensionalNumberArray);
+            }
+            else if(trueWay == "bottom"){
+               bottomWork(row,column,twoDimensionalNumberArray);
+            }
+            else{
+               System.out.println("There is an error!");
+            }
          }
-         else if(trueWay == "left"){
 
-         }
-         else if(trueWay == "top"){
-
-         }
-         else if(trueWay == "bottom"){
-
-         }
-         else{
-            System.out.println("There is an error!");
-         }
 
       }
 
@@ -292,6 +295,7 @@ public class Board {
    }
 
 
+
    public int rightWay(int x,int y,int[][] numberArray){
       int[][] copyList = numberArray;
       int storageNum = copyList[x][y];
@@ -322,7 +326,7 @@ public class Board {
    }
 
    //top way Fonksiyonları bizlere yukarı çıktığımız taktirde hangi uzaklık toplamını verdiğini döndürüyor
-   public String trueStep(String position,int x,int y,int[][] numberArray){
+   public String trueStep(String position,int x,int y,int[][] numberArray,String backStep){
       int rightWay = 0;
       int leftWay = 0;
       int topWay = 0;
@@ -331,32 +335,54 @@ public class Board {
 
       switch (position){
          case("00"):
-            System.out.println("00 in");
             rightWay = rightWay(x,y,numberArray); //olası sonuçlar alınıyor
             bottomWay = bottomWay(x,y,numberArray);
-            if (rightWay < bottomWay){
-               return "right";
-            }
-            else {
+            if (backStep == "01"){
                return "bottom";
             }
-
+            else if (backStep == "10"){
+               return "right";
+            }
+            else{
+               if (rightWay < bottomWay){
+                  return "right";
+               }
+               else {
+                  return "bottom";
+               }
+            }
 
          case("01"):
-            System.out.println("01 in");
             rightWay = rightWay(x,y,numberArray);
             leftWay = leftWay(x,y,numberArray);
             bottomWay = bottomWay(x,y,numberArray);
             smallest = Math.min(rightWay,Math.min(leftWay,bottomWay));
-            if (rightWay == smallest){
-               return "right";
+            if (backStep == "02"){
+               if(leftWay == smallest){  //burada bir sorun olabilir
+                  return "left";
+               }
+               else{
+                  return "bottom";
+               }
             }
-            else if(leftWay == smallest){
-               return "left";
+            else if(backStep == "00"){
+
             }
-            else{
-               return "bottom";
+            else if (backStep == "11"){
+
             }
+            else {
+               if (rightWay == smallest){
+                  return "right";
+               }
+               else if(leftWay == smallest){
+                  return "left";
+               }
+               else{
+                  return "bottom";
+               }
+            }
+
 
          case("02"):
             leftWay = leftWay(x,y,numberArray);
