@@ -3,6 +3,7 @@ import lib.StdDraw; // the StdDraw class in the lib package is used for drawings
 import java.awt.Color; // used for coloring the board
 import java.awt.Point; // used for the positions of the tiles and the empty cell
 import java.util.ArrayList;
+import java.util.Objects;
 
 // A class that is used for modeling the board in the 8 puzzle.
 public class Board {
@@ -17,7 +18,14 @@ public class Board {
    private static final double lineThickness = 0.02;
 
    private int[][] twoDimensionalNumberArray = new int[3][3];
-   private int[] oneDimensionalNumber = new int[9];
+   private String right = "right";
+   private String left = "left";
+   private String bottom = "bottom";
+   private String top = "top";
+
+
+
+   int[] oneDimensionalNumber = new int[9];
 
    // Data fields: the instance variables
    // --------------------------------------------------------------------------
@@ -212,11 +220,17 @@ public class Board {
       int countNum = 0;
       String pastPosition = "empty";
       String combinedPosition = "";
+      for (int i = 0; i < 3; i++){
+         for (int j = 0; j<3;j++ ){
+            System.out.println(" our array"+twoDimensionalNumberArray[i][j]);
+         }
+
+      }
       if (!isSolvable(oneDimensionalNumber)){
          System.out.println("It can't be solved");
       }
       else{ //çözüme gidiyoruz
-         while (trueSolution == twoDimensionalNumberArray){
+         while (trueSolution != twoDimensionalNumberArray){
             for(int i = 0; i < 3;i ++){
                for (int j = 0; j < 3; j ++){
                   if(numberArray[i][j] == 0){
@@ -224,23 +238,21 @@ public class Board {
                      column = j; //get the blank position;
                      combinedPosition = row + "" + column;
                   }}}
-
-            System.out.println("our position"+combinedPosition); //getting empty position
-
+            System.out.println("Row =" + row + "\n Column =" + column);
+            System.out.println("our position ->"+combinedPosition); //getting current empty position
             String trueWay = trueStep(combinedPosition,row,column,twoDimensionalNumberArray,pastPosition); //getting true way
-
-            System.out.println("true way is" + trueWay);
-
-            if (trueWay == "right"){
+            pastPosition = combinedPosition;
+            System.out.println("true way is ->" + trueWay);
+            if (Objects.equals(trueWay, right)){
                rightWork(row,column,twoDimensionalNumberArray);
             }
-            else if(trueWay == "left"){
+            else if(Objects.equals(trueWay, left)){
                leftWork(row,column,twoDimensionalNumberArray);
             }
-            else if(trueWay == "top"){
+            else if(Objects.equals(trueWay, top)){
                topWork(row,column,twoDimensionalNumberArray);
             }
-            else if(trueWay == "bottom"){
+            else if(Objects.equals(trueWay, bottom)){
                bottomWork(row,column,twoDimensionalNumberArray);
             }
             else{
@@ -277,24 +289,29 @@ public class Board {
       int storageNum = numberArray[x][y];
       numberArray[x][y] = numberArray[x][y+1];
       numberArray[x][y+1] = storageNum;
+      System.out.println("right work");
    }
    public void leftWork(int x,int y,int[][] numberArray){
       int storageNum = numberArray[x][y];
       numberArray[x][y] = numberArray[x][y-1];
       numberArray[x][y-1] = storageNum;
+      System.out.println("left work");
    }
    public void bottomWork(int x,int y,int[][] numberArray){
       int storageNum = numberArray[x][y];
+      System.out.println("Storage Num ->" + storageNum);
       numberArray[x][y] = numberArray[x+1][y];
+      System.out.println("numberArray[x][y] ->" + numberArray[x][y]);
       numberArray[x+1][y] = storageNum;
+      System.out.println("numberArray[x+1][y] ->" + numberArray[x+1][y]);
+      System.out.println("bottom work");
    }
    public void topWork(int x,int y,int[][] numberArray){
       int storageNum = numberArray[x][y];
       numberArray[x][y] = numberArray[x-1][y];
       numberArray[x-1][y] = storageNum;
+      System.out.println("top work");
    }
-
-
 
    public int rightWay(int x,int y,int[][] numberArray){
       int[][] copyList = numberArray;
@@ -337,18 +354,18 @@ public class Board {
          case("00"):
             rightWay = rightWay(x,y,numberArray); //olası sonuçlar alınıyor
             bottomWay = bottomWay(x,y,numberArray);
-            if (backStep == "01"){
-               return "bottom";
+            if (backStep.equals("01")){
+               return bottom;
             }
-            else if (backStep == "10"){
-               return "right";
+            else if (backStep.equals("10")){
+               return right;
             }
             else{
                if (rightWay < bottomWay){
-                  return "right";
+                  return right;
                }
                else {
-                  return "bottom";
+                  return bottom;
                }
             }
 
@@ -357,42 +374,60 @@ public class Board {
             leftWay = leftWay(x,y,numberArray);
             bottomWay = bottomWay(x,y,numberArray);
             smallest = Math.min(rightWay,Math.min(leftWay,bottomWay));
-            if (backStep == "02"){
-               if(leftWay == smallest){  //burada bir sorun olabilir
-                  return "left";
+            if (backStep.equals("02")){
+               if(leftWay == smallest){  //burada bir sorun olabilir %%fark etmiyor
+                  return left;
                }
                else{
-                  return "bottom";
+                  return bottom;
                }
             }
-            else if(backStep == "00"){
-
+            else if(backStep.equals("00")){
+               if(rightWay == smallest){  //burada bir sorun olabilir %%fark etmiyor
+                  return right;
+               }
+               else{
+                  return bottom;
+               }
             }
-            else if (backStep == "11"){
-
+            else if (backStep.equals("11")){
+               if(leftWay == smallest){  //burada bir sorun olabilir %%fark etmiyor
+                  return left;
+               }
+               else{
+                  return right;
+               }
             }
             else {
                if (rightWay == smallest){
-                  return "right";
+                  return right;
                }
                else if(leftWay == smallest){
-                  return "left";
+                  return left;
                }
                else{
-                  return "bottom";
+                  return bottom;
                }
             }
-
 
          case("02"):
             leftWay = leftWay(x,y,numberArray);
             bottomWay = bottomWay(x,y,numberArray);
-            if (leftWay < bottomWay){
-               return "left";
+            if (backStep.equals("01")){
+               return bottom;
             }
-            else {
-               return "bottom";
+            else if(backStep.equals("12")){
+               return left;
             }
+            else{
+               if (leftWay < bottomWay){
+                  return left;
+               }
+               else {
+                  return bottom;
+               }
+            }
+
 
 
          case("10"):
@@ -400,15 +435,43 @@ public class Board {
             topWay = topWay(x,y,numberArray);
             bottomWay = bottomWay(x,y,numberArray);
             smallest = Math.min(rightWay,Math.min(leftWay,bottomWay));
-            if (rightWay == smallest){
-               return "right";
+            if (Objects.equals(backStep, "00")){
+               if (rightWay < bottomWay){
+                  return right;
+               }
+               else {
+                  return bottom;
+               }
             }
-            else if(topWay == smallest){
-               return "top";
+            else if(Objects.equals(backStep, "20")){
+               if (topWay < rightWay){
+                  return top;
+               }
+               else {
+                  return right;
+               }
+            }
+            else if (Objects.equals(backStep, "11")){
+               if (topWay < bottomWay){
+                  return top;
+               }
+               else {
+                  return bottom;
+               }
+
             }
             else{
-               return "bottom";
+               if (rightWay == smallest){
+                  return right;
+               }
+               else if(topWay == smallest){
+                  return top;
+               }
+               else{
+                  return bottom;
+               }
             }
+
 
          case("11"):
             rightWay = rightWay(x,y,numberArray);
@@ -416,68 +479,186 @@ public class Board {
             bottomWay = bottomWay(x,y,numberArray);
             leftWay = leftWay(x,y,numberArray);
             smallest = Math.min(Math.min(rightWay,topWay),Math.min(leftWay,bottomWay));
-            if (rightWay == smallest){
-               return "right";
+            if (Objects.equals(backStep, "01")){
+               if (rightWay == smallest){
+                  return right;
+               }
+               else if(leftWay == smallest){
+                  return left;
+               }
+               else{
+                  return bottom;
+               }
             }
-            else if(topWay == smallest){
-               return "top";
+            else if(Objects.equals(backStep, "10")){
+               if (rightWay == smallest){
+                  return right;
+               }
+               else if(topWay == smallest){
+                  return top;
+               }
+               else{
+                  return bottom;
+               }
             }
-            else if(leftWay == smallest){
-               return "left";
+            else if(Objects.equals(backStep, "12")){
+               if (topWay == smallest){
+                  return top;
+               }
+               else if(leftWay == smallest){
+                  return left;
+               }
+               else{
+                  return bottom;
+               }
+            }
+            else if(Objects.equals(backStep, "21")){
+               if (rightWay == smallest){
+                  return right;
+               }
+               else if(leftWay == smallest){
+                  return left;
+               }
+               else{
+                  return top;
+               }
             }
             else{
-               return "bottom";
+               if (rightWay == smallest){
+                  return right;
+               }
+               else if(topWay == smallest){
+                  return top;
+               }
+               else if(leftWay == smallest){
+                  return left;
+               }
+               else{
+                  return bottom;
+               }
             }
+
 
          case("12"):
             topWay = topWay(x,y,numberArray);
             bottomWay = bottomWay(x,y,numberArray);
             leftWay = leftWay(x,y,numberArray);
             smallest = Math.min(leftWay,Math.min(topWay,bottomWay));
-            if (bottomWay == smallest){
-               return "bottom";
+            if (Objects.equals(backStep, "02")){
+               if (leftWay < bottomWay){
+                  return left;
+               }
+               else {
+                  return bottom;
+               }
             }
-            else if(topWay == smallest){
-               return "top";
+            else if(Objects.equals(backStep, "11")){
+               if (topWay < bottomWay){
+                  return top;
+               }
+               else {
+                  return bottom;
+               }
+            }
+            else if (Objects.equals(backStep, "22")){
+               if (leftWay < bottomWay){
+                  return left;
+               }
+               else {
+                  return bottom;
+               }
             }
             else{
-               return "left";
+               if (bottomWay == smallest){
+                  return bottom;
+               }
+               else if(topWay == smallest){
+                  return top;
+               }
+               else{
+                  return left;
+               }
             }
-
-         case("20"):
+            case("20"):
             rightWay = rightWay(x,y,numberArray);
             topWay = topWay(x,y,numberArray);
-            if (rightWay < topWay){
-               return "right";
+            if (Objects.equals(backStep, "10")){
+               return right;
+            }
+            else if (Objects.equals(backStep, "21")){
+               return top;
             }
             else {
-               return "top";
+               if (rightWay < topWay){
+                  return right;
+               }
+               else {
+                  return top;
+               }
             }
+
 
          case("21"):
             rightWay = rightWay(x,y,numberArray);
             topWay = topWay(x,y,numberArray);
             leftWay = leftWay(x,y,numberArray);
             smallest = Math.min(leftWay,Math.min(topWay,rightWay));
-            if (rightWay == smallest){
-               return "right";
+            if (Objects.equals(backStep, "11")){
+               if (leftWay < rightWay){
+                  return left;
+               }
+               else {
+                  return right;
+               }
             }
-            else if(topWay == smallest){
-               return "top";
+            else if (Objects.equals(backStep, "20")){
+               if (rightWay < topWay){
+                  return right;
+               }
+               else{
+                  return top;
+               }
             }
-            else{
-               return "left";
+            else if (Objects.equals(backStep, "22")){
+               if (topWay < leftWay){
+                  return top;
+               }
+               else {
+                  return left;
+               }
+
             }
+            else {
+               if (rightWay == smallest){
+                  return right;
+               }
+               else if(topWay == smallest){
+                  return top;
+               }
+               else{
+                  return left;
+               }
+            }
+
 
          case("22"):
             topWay = topWay(x,y,numberArray);
             leftWay = leftWay(x,y,numberArray);
-            if (leftWay < topWay){
-               return "left";
+            if (Objects.equals(backStep, "12")){
+               return left;
+            }
+            else if (Objects.equals(backStep, "21")){
+               return top;
             }
             else {
-               return "top";
+               if (leftWay < topWay){
+                  return left;
+               }
+               else {
+                  return top;
+               }
             }
+
          default:
             return "false";
       }

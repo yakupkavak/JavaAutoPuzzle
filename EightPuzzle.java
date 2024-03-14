@@ -25,18 +25,9 @@ public class EightPuzzle {
          board.draw();
          StdDraw.show();
          StdDraw.pause(100); // 100 ms
-
-         //inteligent
-         int count = 0;
-         int distance = 0;
-         int[] true_list = {1,2,3,4,5,6,7,8};
-         while (true){
-            //her tur hesaplama yapmak fonksiyonu yazalım
+         //int[][] list = board.getList();
 
 
-            break;
-
-         }
 
 
          // if the user has pressed the right arrow key on the keyboard
