@@ -33,12 +33,12 @@ public class Board {
    private Tile[][] tiles = new Tile[3][3];
    // the row and the column indexes of the empty cell
    private int emptyCellRow, emptyCellCol;
+   int[] numbers = new int[9];
 
    // The default constructor creates a random board
    // --------------------------------------------------------------------------
    public Board() {
       // create an array that contains each number from 0 to 8
-      int[] numbers = new int[9];
       for (int i = 0; i < 9; i++)
          numbers[i] = i;
       // randomly shuffle the numbers in the array by using the randomShuffling
@@ -77,6 +77,7 @@ public class Board {
       oneDimensionalNumber = numbers.clone();
       //drawMessage(isSolvable(numbers));
       //isSolvable(numbers);
+      //manhattanDistance(twoDimensionalNumberArray);
       solutionGame(twoDimensionalNumberArray);
 
    }
@@ -208,50 +209,44 @@ public class Board {
       }
    }
 
-   public void drawMessage(boolean isTrue) {
-      // Use StdDraw to display a message based on solvability
-      System.out.println( isTrue? "Solvable Puzzle" : "Unsolvable Puzzle");
-   }
-
    public void solutionGame(int[][] numberArray){
       int[][] trueSolution = {{1,2,3},{4,5,6},{7,8,0}};
       int[] solution = {};
       int row = 0,column = 0;
       int countNum = 0;
       String pastPosition = "empty";
-      String combinedPosition = "";
-//      for (int i = 0; i < 3; i++){
-//         for (int j = 0; j<3;j++ ){
-//            System.out.println("our array"+twoDimensionalNumberArray[i][j]);
-//         }
-//
-//      }
+      String combinedPosition = "empty";
+
       if (!isSolvable(oneDimensionalNumber)){
          System.out.println("It can't be solved");
       }
       else{ //çözüme gidiyoruz
          while (trueSolution != twoDimensionalNumberArray){
             for(int i = 0; i < 3;i ++){
-               System.out.println();
                for (int j = 0; j < 3; j ++){
                   if(numberArray[i][j] == 0){
                      row = i;
                      column = j; //get the blank position;
                      combinedPosition = row + "" + column;
-                     System.out.print(twoDimensionalNumberArray[i][j]);
-                     System.out.println("Our combinet Position value is ->" + combinedPosition);
-                     System.out.println("Two dimen ->" + twoDimensionalNumberArray[row][column]);
+                     System.out.println("Boşluğun bulunduğu konum ->" + combinedPosition);
+                     //System.out.println("Two dimen ->" + twoDimensionalNumberArray[row][column]);
                   }}}
-            System.out.println("Row =" + row + "\nColumn =" + column);
+            for (int i = 0; i < 3; i++){
+               System.out.println();
+               for (int j = 0; j<3;j++ ){
+                  System.out.print(twoDimensionalNumberArray[i][j]);
+               }}
+            System.out.println();
+            //System.out.println("Row =" + row + "\nColumn =" + column);
+            //System.out.println("our position ->"+combinedPosition); //getting current empty position
+            //System.out.println("Two dimensi ->" + twoDimensionalNumberArray[row][column]);
 
-            System.out.println("our position ->"+combinedPosition); //getting current empty position
-            System.out.println("Two dimensi ->" + twoDimensionalNumberArray[row][column]);
             String trueWay = trueStep(combinedPosition,row,column,twoDimensionalNumberArray,pastPosition); //getting true way
+            //TRUE STEP DOENSN'T CHANGE THE MAIN LIST
 
-            System.out.println("New Row =" + row + "\nColumn =" + column);
-            System.out.println("Two dimensional ->" + twoDimensionalNumberArray[row][column]);
-
-            pastPosition = combinedPosition;
+            //System.out.println("New Row =" + row + "\nColumn =" + column);
+            //System.out.println("Two dimensional ->" + twoDimensionalNumberArray[row][column]);
+            //System.out.println("Past position is -> " + pastPosition);
             System.out.println("true way is ->" + trueWay);
             if (Objects.equals(trueWay, right)){
                rightWork(row,column,twoDimensionalNumberArray);
@@ -268,6 +263,8 @@ public class Board {
             else{
                System.out.println("There is an error!");
             }
+            pastPosition = combinedPosition;
+            System.out.println();
          }
 
 
@@ -278,22 +275,39 @@ public class Board {
 
    }
    public int manhattanDistance(int[][] numberArray){ //bir değer değiştirmemektedir
-      int distance = 0;
+
       int[][] trueSolution = {{1,2,3},{4,5,6},{7,8,0}};
-      for (int i = 0; i <3; i++){
-         for(int j = 0; j < 3; j++){
-            for (int x = 0; x <3; x++){
-               for(int y = 0; y < 3; y++){
-                  if (numberArray[i][j] == trueSolution[x][y]  && numberArray[i][j] != 0){
-                     distance += Math.abs(i-x) + Math.abs(j-y);
-                  }
-               }
-            }
-
-         }
+//      System.out.println("NumberArray");
+//      for (int i = 0; i <3; i++){
+//         System.out.println();
+//         for(int j = 0; j < 3; j++){
+//            System.out.print(numberArray[i][j]);
+//         }
+//      }
+//      System.out.println("SolutionArray");
+//      for (int i = 0; i <3; i++){
+//         System.out.println();
+//         for(int j = 0; j < 3; j++){
+//            System.out.print(trueSolution[i][j]);
+//         }
+//      }
+      int distance = 0;
+      int totalDistance = 0;
+      System.out.println();
+      for (int i = 0; i <3; i++){ //row
+         for(int j = 0; j < 3; j++){ //column
+            for (int x = 0; x <3; x++){ //row
+               for(int y = 0; y < 3; y++){ //column
+                  if (numberArray[i][j] == trueSolution[x][y] && numberArray[i][j] != 0){
+                     distance = Math.abs(i-x) + Math.abs(j-y);
+                     //System.out.println("X line distance ->" + Math.abs(i-x));
+//                     System.out.println("Y line distance ->" + Math.abs(j-y));
+//                     System.out.println("Number " + numberArray[i][j] + " distance is ->" + distance);
+                     totalDistance += distance;
+                  }}}}
       }
-
-      return distance;
+      System.out.println("Total distance is ->" +  totalDistance);
+      return totalDistance;
    }
    public void rightWork(int x,int y,int[][] numberArray){
       int storageNum = numberArray[x][y];
@@ -309,11 +323,11 @@ public class Board {
    }
    public void bottomWork(int x,int y,int[][] numberArray){
       int storageNum = numberArray[x][y];
-      System.out.println("Storage Num ->" + storageNum);
+      //System.out.println("Storage Num ->" + storageNum);
       numberArray[x][y] = numberArray[x+1][y];
-      System.out.println("numberArray[x][y] ->" + numberArray[x][y]);
+      //System.out.println("numberArray[x][y] ->" + numberArray[x][y]);
       numberArray[x+1][y] = storageNum;
-      System.out.println("numberArray[x+1][y] ->" + numberArray[x+1][y]);
+      //System.out.println("numberArray[x+1][y] ->" + numberArray[x+1][y]);
       System.out.println("bottom work");
    }
    public void topWork(int x,int y,int[][] numberArray){
@@ -325,35 +339,38 @@ public class Board {
 
    public int rightWay(int x,int y,int[][] numberArray){
       int[][] copyList = cloneTwoDimensionalArray(numberArray);
-      System.out.println("Number Array boşluk değeri1 ->" + numberArray[x][y]);
       int storageNum = copyList[x][y];
-      System.out.println("Number Array boşluk değeri2 ->" + numberArray[x][y]);
       copyList[x][y] = copyList[x][y+1];
-      System.out.println("Number Array boşluk değeri3 ->" + numberArray[x][y]);
       copyList[x][y+1] = storageNum;
-      System.out.println("Number Array boşluk değeri4 ->" + numberArray[x][y]);
-      return manhattanDistance(copyList);
+      int distance = manhattanDistance(copyList);
+      System.out.println("Right way distance->" + distance );
+      return distance;
    }
    public int leftWay(int x,int y,int[][] numberArray){
       int[][] copyList = cloneTwoDimensionalArray(numberArray);
       int storageNum = copyList[x][y];
       copyList[x][y] = copyList[x][y-1];
       copyList[x][y-1] = storageNum;
-      return manhattanDistance(copyList);
+      int distance = manhattanDistance(copyList);
+      System.out.println("Left way distance->" + distance );
+      return distance;
    }
    public int bottomWay(int x,int y,int[][] numberArray){
       int[][] copyList = cloneTwoDimensionalArray(numberArray);
       int storageNum = copyList[x][y];
       copyList[x][y] = copyList[x+1][y];
       copyList[x+1][y] = storageNum;
-      return manhattanDistance(copyList);
-   }
+      int distance = manhattanDistance(copyList);
+      System.out.println("Bottom way distance->" + distance );
+      return distance;   }
    public int topWay(int x,int y,int[][] numberArray){
       int[][] copyList = cloneTwoDimensionalArray(numberArray);
       int storageNum = copyList[x][y];
       copyList[x][y] = copyList[x-1][y];
       copyList[x-1][y] = storageNum;
-      return manhattanDistance(copyList);
+      int distance = manhattanDistance(copyList);
+      System.out.println("Top way distance->" + distance );
+      return distance;
    }
 
    //top way Fonksiyonları bizlere yukarı çıktığımız taktirde hangi uzaklık toplamını verdiğini döndürüyor
@@ -363,7 +380,7 @@ public class Board {
       int topWay = 0;
       int bottomWay = 0;
       int smallest = 0;
-      System.out.println("Number Array boşluk değeri ->" + numberArray[x][y]);
+      System.out.println("BackStep ->" + backStep);
 
       switch (position){
          case("00"):
@@ -490,13 +507,9 @@ public class Board {
 
          case("11"):
             rightWay = rightWay(x,y,numberArray);
-            System.out.println("Number Array boşluk değeriiii ->" + numberArray[x][y]);
             topWay = topWay(x,y,numberArray);
-            System.out.println("Number Array boşluk değeriiii ->" + numberArray[x][y]);
             bottomWay = bottomWay(x,y,numberArray);
-            System.out.println("Number Array boşluk değeriiii ->" + numberArray[x][y]);
             leftWay = leftWay(x,y,numberArray);
-            System.out.println("Number Array boşluk değeriiii ->" + numberArray[x][y]);
             smallest = Math.min(Math.min(rightWay,topWay),Math.min(leftWay,bottomWay));
             if (Objects.equals(backStep, "01")){
                if (rightWay == smallest){
@@ -580,11 +593,11 @@ public class Board {
                }
             }
             else if (Objects.equals(backStep, "22")){
-               if (leftWay < bottomWay){
+               if (leftWay < topWay){
                   return left;
                }
                else {
-                  return bottom;
+                  return top;
                }
             }
             else{
