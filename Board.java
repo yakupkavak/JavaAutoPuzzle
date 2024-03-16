@@ -74,9 +74,9 @@ public class Board {
             loopNum++;
          }
       }
-      oneDimensionalNumber = numbers;
-      drawMessage(isSolvable(numbers));
-      isSolvable(numbers);
+      oneDimensionalNumber = numbers.clone();
+      //drawMessage(isSolvable(numbers));
+      //isSolvable(numbers);
       solutionGame(twoDimensionalNumberArray);
 
    }
@@ -220,27 +220,37 @@ public class Board {
       int countNum = 0;
       String pastPosition = "empty";
       String combinedPosition = "";
-      for (int i = 0; i < 3; i++){
-         for (int j = 0; j<3;j++ ){
-            System.out.println(" our array"+twoDimensionalNumberArray[i][j]);
-         }
-
-      }
+//      for (int i = 0; i < 3; i++){
+//         for (int j = 0; j<3;j++ ){
+//            System.out.println("our array"+twoDimensionalNumberArray[i][j]);
+//         }
+//
+//      }
       if (!isSolvable(oneDimensionalNumber)){
          System.out.println("It can't be solved");
       }
       else{ //çözüme gidiyoruz
          while (trueSolution != twoDimensionalNumberArray){
             for(int i = 0; i < 3;i ++){
+               System.out.println();
                for (int j = 0; j < 3; j ++){
                   if(numberArray[i][j] == 0){
                      row = i;
                      column = j; //get the blank position;
                      combinedPosition = row + "" + column;
+                     System.out.print(twoDimensionalNumberArray[i][j]);
+                     System.out.println("Our combinet Position value is ->" + combinedPosition);
+                     System.out.println("Two dimen ->" + twoDimensionalNumberArray[row][column]);
                   }}}
-            System.out.println("Row =" + row + "\n Column =" + column);
+            System.out.println("Row =" + row + "\nColumn =" + column);
+
             System.out.println("our position ->"+combinedPosition); //getting current empty position
+            System.out.println("Two dimensi ->" + twoDimensionalNumberArray[row][column]);
             String trueWay = trueStep(combinedPosition,row,column,twoDimensionalNumberArray,pastPosition); //getting true way
+
+            System.out.println("New Row =" + row + "\nColumn =" + column);
+            System.out.println("Two dimensional ->" + twoDimensionalNumberArray[row][column]);
+
             pastPosition = combinedPosition;
             System.out.println("true way is ->" + trueWay);
             if (Objects.equals(trueWay, right)){
@@ -314,28 +324,32 @@ public class Board {
    }
 
    public int rightWay(int x,int y,int[][] numberArray){
-      int[][] copyList = numberArray;
+      int[][] copyList = cloneTwoDimensionalArray(numberArray);
+      System.out.println("Number Array boşluk değeri1 ->" + numberArray[x][y]);
       int storageNum = copyList[x][y];
+      System.out.println("Number Array boşluk değeri2 ->" + numberArray[x][y]);
       copyList[x][y] = copyList[x][y+1];
+      System.out.println("Number Array boşluk değeri3 ->" + numberArray[x][y]);
       copyList[x][y+1] = storageNum;
+      System.out.println("Number Array boşluk değeri4 ->" + numberArray[x][y]);
       return manhattanDistance(copyList);
    }
    public int leftWay(int x,int y,int[][] numberArray){
-      int[][] copyList = numberArray;
+      int[][] copyList = cloneTwoDimensionalArray(numberArray);
       int storageNum = copyList[x][y];
       copyList[x][y] = copyList[x][y-1];
       copyList[x][y-1] = storageNum;
       return manhattanDistance(copyList);
    }
    public int bottomWay(int x,int y,int[][] numberArray){
-      int[][] copyList = numberArray;
+      int[][] copyList = cloneTwoDimensionalArray(numberArray);
       int storageNum = copyList[x][y];
       copyList[x][y] = copyList[x+1][y];
       copyList[x+1][y] = storageNum;
       return manhattanDistance(copyList);
    }
    public int topWay(int x,int y,int[][] numberArray){
-      int[][] copyList = numberArray;
+      int[][] copyList = cloneTwoDimensionalArray(numberArray);
       int storageNum = copyList[x][y];
       copyList[x][y] = copyList[x-1][y];
       copyList[x-1][y] = storageNum;
@@ -349,6 +363,7 @@ public class Board {
       int topWay = 0;
       int bottomWay = 0;
       int smallest = 0;
+      System.out.println("Number Array boşluk değeri ->" + numberArray[x][y]);
 
       switch (position){
          case("00"):
@@ -475,9 +490,13 @@ public class Board {
 
          case("11"):
             rightWay = rightWay(x,y,numberArray);
+            System.out.println("Number Array boşluk değeriiii ->" + numberArray[x][y]);
             topWay = topWay(x,y,numberArray);
+            System.out.println("Number Array boşluk değeriiii ->" + numberArray[x][y]);
             bottomWay = bottomWay(x,y,numberArray);
+            System.out.println("Number Array boşluk değeriiii ->" + numberArray[x][y]);
             leftWay = leftWay(x,y,numberArray);
+            System.out.println("Number Array boşluk değeriiii ->" + numberArray[x][y]);
             smallest = Math.min(Math.min(rightWay,topWay),Math.min(leftWay,bottomWay));
             if (Objects.equals(backStep, "01")){
                if (rightWay == smallest){
@@ -658,12 +677,20 @@ public class Board {
                   return top;
                }
             }
-
          default:
             return "false";
       }
 
+   }
 
+   public int[][] cloneTwoDimensionalArray(int[][] myArray){
+      int[][] newArray = new  int[myArray.length][myArray[0].length];
+      for(int i = 0; i < myArray.length;i++){
+         for (int j = 0; j < myArray[0].length;j++){
+            newArray[i][j] =myArray[i][j];
+         }
+      }
+      return newArray;
    }
 
 }
