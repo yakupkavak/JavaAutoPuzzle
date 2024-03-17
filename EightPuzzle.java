@@ -27,8 +27,7 @@ public class EightPuzzle {
          StdDraw.pause(100); // 100 ms
          //int[][] list = board.getList();
 
-
-
+         board.solutionGame();
 
          // if the user has pressed the right arrow key on the keyboard
          if (StdDraw.isKeyPressed(KeyEvent.VK_RIGHT))
