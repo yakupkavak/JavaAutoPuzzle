@@ -207,7 +207,24 @@ public class Board {
          return false;
       }
    }
+   public boolean areArraysEqual(int[][] array1, int[][] array2) {
+      if (array1.length != array2.length) {
+         return false;
+      }
 
+      for (int i = 0; i < array1.length; i++) {
+         if (array1[i].length != array2[i].length) {
+            return false;
+         }
+         for (int j = 0; j < array1[i].length; j++) {
+            if (array1[i][j] != array2[i][j]) {
+               return false;
+            }
+         }
+      }
+
+      return true;
+   }
    public void solutionGame(){
       int[][] numberArray = twoDimensionalNumberArray;
       int[][] trueSolution = {{1,2,3},{4,5,6},{7,8,0}};
@@ -220,15 +237,15 @@ public class Board {
       if (!isSolvable(oneDimensionalNumber)){
          System.out.println("It can't be solved");
       }
-      else{ //çözüme gidiyoruz
-         while (trueSolution != twoDimensionalNumberArray){
+      else{ //solving problem
+         while (!(areArraysEqual(trueSolution,numberArray))){
             for(int i = 0; i < 3;i ++){
                for (int j = 0; j < 3; j ++){
                   if(numberArray[i][j] == 0){
                      row = i;
                      column = j; //get the blank position;
                      combinedPosition = row + "" + column;
-                     System.out.println("Boşluğun bulunduğu konum ->" + combinedPosition);
+                     System.out.println("Empty space position ->" + combinedPosition);
                      //System.out.println("Two dimen ->" + twoDimensionalNumberArray[row][column]);
                   }}}
             for (int i = 0; i < 3; i++){
@@ -274,23 +291,8 @@ public class Board {
        //her seferinde hepsinin mesafesini hesaplayan bir fonksiyon
 
    }
-   public int manhattanDistance(int[][] numberArray){ //bir değer değiştirmemektedir
-
+   public int manhattanDistance(int[][] numberArray){
       int[][] trueSolution = {{1,2,3},{4,5,6},{7,8,0}};
-//      System.out.println("NumberArray");
-//      for (int i = 0; i <3; i++){
-//         System.out.println();
-//         for(int j = 0; j < 3; j++){
-//            System.out.print(numberArray[i][j]);
-//         }
-//      }
-//      System.out.println("SolutionArray");
-//      for (int i = 0; i <3; i++){
-//         System.out.println();
-//         for(int j = 0; j < 3; j++){
-//            System.out.print(trueSolution[i][j]);
-//         }
-//      }
       int distance = 0;
       int totalDistance = 0;
       System.out.println();
@@ -300,9 +302,6 @@ public class Board {
                for(int y = 0; y < 3; y++){ //column
                   if (numberArray[i][j] == trueSolution[x][y] && numberArray[i][j] != 0){
                      distance = Math.abs(i-x) + Math.abs(j-y);
-                     //System.out.println("X line distance ->" + Math.abs(i-x));
-//                     System.out.println("Y line distance ->" + Math.abs(j-y));
-//                     System.out.println("Number " + numberArray[i][j] + " distance is ->" + distance);
                      totalDistance += distance;
                   }}}}
       }
@@ -319,7 +318,6 @@ public class Board {
             index++;
          }
       }
-
       for (int i = 0; i < linearArray.length - 1; i++) {
          for (int j = i + 1; j < linearArray.length; j++) {
             if (linearArray[i] != 0 && linearArray[j] != 0 && linearArray[i] > linearArray[j]) {
@@ -327,7 +325,6 @@ public class Board {
             }
          }
       }
-
       return myNumber;
    }
 
@@ -433,7 +430,6 @@ public class Board {
       return distance;
    }
 
-   //top way Fonksiyonları bizlere yukarı çıktığımız taktirde hangi uzaklık toplamını verdiğini döndürüyor
    public String trueStep(String position,int x,int y,int[][] numberArray,String backStep){
       int rightWay = 0;
       int leftWay = 0;
@@ -449,7 +445,7 @@ public class Board {
 
       switch (position){
          case("00"):
-            rightWay = rightWay(x,y,numberArray); //olası sonuçlar alınıyor
+            rightWay = rightWay(x,y,numberArray);
             bottomWay = bottomWay(x,y,numberArray);
             if (backStep.equals("01")){
                return bottom;
@@ -475,12 +471,9 @@ public class Board {
             rightInversion = rightWayInversion(x,y,numberArray);
             leftInversion = leftWayInversion(x,y,numberArray);
             bottomInversion = bottomWayInversion(x,y,numberArray);
-            topInversion = topWayInversion(x,y,numberArray);
-
-            smallestInversion = Math.min(rightInversion,Math.min(leftInversion,bottomInversion));
 
             if (backStep.equals("02")){
-               if(leftWay == bottomWay){  //if left and bottom is equal check the inversion
+               if(leftWay == bottomWay){
                   if (leftWayInversion(x,y,numberArray) <= bottomWayInversion(x,y,numberArray)){
                      return left;
                   }
@@ -488,7 +481,7 @@ public class Board {
                      return bottom;
                   }
                }
-               else if(leftWay == smallest){  //burada bir sorun olabilir %%fark etmiyor
+               else if(leftWay == smallest){
                   return left;
                }
                else{
@@ -496,7 +489,7 @@ public class Board {
                }
             }
             else if(backStep.equals("00")){
-               if(rightWay == bottomWay){  //if left and bottom is equal check the inversion
+               if(rightWay == bottomWay){
                   if (rightWayInversion(x,y,numberArray) <= bottomWayInversion(x,y,numberArray)){
                      return right;
                   }
@@ -504,7 +497,7 @@ public class Board {
                      return bottom;
                   }
                }
-               else if(rightWay == smallest){  //burada bir sorun olabilir %%fark etmiyor
+               else if(rightWay == smallest){
                   return left;
                }
                else{
@@ -512,7 +505,7 @@ public class Board {
                }
             }
             else if (backStep.equals("11")){
-               if(rightWay == leftWay){  //if left and bottom is equal check the inversion
+               if(rightWay == leftWay){
                   if (rightWayInversion(x,y,numberArray) <= leftWayInversion(x,y,numberArray)){
                      return right;
                   }
@@ -520,7 +513,7 @@ public class Board {
                      return left;
                   }
                }
-               else if(rightWay == smallest){  //burada bir sorun olabilir %%fark etmiyor
+               else if(rightWay == smallest){
                   return right;
                }
                else{
@@ -568,10 +561,9 @@ public class Board {
             rightInversion = rightWayInversion(x,y,numberArray);
             bottomInversion = bottomWayInversion(x,y,numberArray);
             topInversion = topWayInversion(x,y,numberArray);
-            smallestInversion = Math.min(rightInversion,Math.min(topInversion,bottomInversion));
 
             if (Objects.equals(backStep, "00")){
-               if(rightWay == bottomWay){  //if left and bottom is equal check the inversion
+               if(rightWay == bottomWay){
                   if (rightWayInversion(x,y,numberArray) <= bottomWayInversion(x,y,numberArray)){
                      return right;
                   }
@@ -579,7 +571,7 @@ public class Board {
                      return bottom;
                   }
                }
-               else if(rightWay == smallest){  //burada bir sorun olabilir %%fark etmiyor
+               else if(rightWay == smallest){
                   return right;
                }
                else{
@@ -587,7 +579,7 @@ public class Board {
                }
             }
             else if(Objects.equals(backStep, "20")){
-               if(topWay == rightWay){  //if left and bottom is equal check the inversion
+               if(topWay == rightWay){
                   if (rightWayInversion(x,y,numberArray) <= topWayInversion(x,y,numberArray)){
                      return right;
                   }
@@ -595,7 +587,7 @@ public class Board {
                      return top;
                   }
                }
-               else if(rightWay == smallest){  //burada bir sorun olabilir %%fark etmiyor
+               else if(rightWay == smallest){
                   return right;
                }
                else{
@@ -603,7 +595,7 @@ public class Board {
                }
             }
             else if (Objects.equals(backStep, "11")){
-               if(topWay == bottomWay){  //if left and bottom is equal check the inversion
+               if(topWay == bottomWay){
                   if (topWayInversion(x,y,numberArray) <= bottomWayInversion(x,y,numberArray)){
                      return top;
                   }
@@ -611,7 +603,7 @@ public class Board {
                      return bottom;
                   }
                }
-               else if(topWay == smallest){  //burada bir sorun olabilir %%fark etmiyor
+               else if(topWay == smallest){
                   return top;
                }
                else{
@@ -684,7 +676,7 @@ public class Board {
                      return bottom;
                   }
 
-               }//hiçbiri birbirine eş değil
+               }
                else{
                   if (rightWay == smallest){
                      return right;
@@ -876,7 +868,6 @@ public class Board {
             leftInversion = leftWayInversion(x,y,numberArray);
             bottomInversion = bottomWayInversion(x,y,numberArray);
             topInversion = topWayInversion(x,y,numberArray);
-            smallestInversion = Math.min(leftInversion,Math.min(topInversion,bottomInversion));
 
             if (Objects.equals(backStep, "02")){
                if(leftWay == bottomWay){  //if left and bottom is equal check the inversion
@@ -965,7 +956,6 @@ public class Board {
             leftInversion = leftWayInversion(x,y,numberArray);
             rightInversion = rightWayInversion(x,y,numberArray);
             topInversion = topWayInversion(x,y,numberArray);
-            smallestInversion = Math.min(leftInversion,Math.min(topInversion,rightInversion));
 
             if (Objects.equals(backStep, "11")){
                if(rightWay == leftWay){  //if left and bottom is equal check the inversion
